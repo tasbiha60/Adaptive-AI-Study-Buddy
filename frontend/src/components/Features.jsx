@@ -1,8 +1,10 @@
 
-
+import { useNavigate } from 'react-router-dom'
 import './Features.css'
 
 function Features() {
+  const navigate = useNavigate()
+
   return (
     <section className="features-section" id="features">
 
@@ -40,7 +42,17 @@ function Features() {
           </p>
         </div>
 
-        <div className="feature-card">
+        <div
+          className="feature-card"
+          onClick={() => navigate('/flashcards')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              navigate('/flashcards')
+            }
+          }}
+        >
           <div className="feature-icon">🗂️</div>
           <h3>Smart Flashcards</h3>
           <p>
@@ -83,4 +95,5 @@ function Features() {
 }
 
 export default Features
+
 

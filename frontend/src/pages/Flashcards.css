@@ -1,0 +1,21 @@
+
+
+.empty-flashcards {
+  padding: 60px 25px;
+  margin-top: 30px;
+  text-align: center;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.empty-flashcards h2 {
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+
+.empty-flashcards p {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
