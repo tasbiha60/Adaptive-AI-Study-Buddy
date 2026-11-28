@@ -1,3 +1,4 @@
+
 import './Navbar.css'
 
 function Navbar() {
@@ -15,6 +16,7 @@ function Navbar() {
         <a href="#home">Home</a>
         <a href="#features">Features</a>
         <a href="#how-it-works">How it works</a>
+        <a href="/upload-pdf">Upload PDF</a>
       </div>
 
       <div className="navbar-actions">
@@ -32,3 +34,4 @@ function Navbar() {
 }
 
 export default Navbar
+

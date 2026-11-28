@@ -1,3 +1,4 @@
+
 .navbar {
   width: 100%;
   min-height: 76px;
@@ -5,8 +6,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #F8F6F0;
-  border-bottom: 1px solid #E8E5DC;
+
+  /* Glassmorphism effect */
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 25px rgba(115, 75, 150, 0.07);
+
   position: sticky;
   top: 0;
   z-index: 100;
@@ -19,7 +27,7 @@
   font-family: var(--font-heading);
   font-size: 19px;
   font-weight: 700;
-  color: #343B36;
+  color: #42275f;
 }
 
 .brand-icon {
@@ -27,14 +35,17 @@
   height: 36px;
   display: grid;
   place-items: center;
-  background-color: #7D9275;
+
+  background: linear-gradient(135deg, #a77be8, #e6a8d1);
   color: white;
+
   border-radius: 11px;
   font-weight: 700;
+  box-shadow: 0 4px 12px rgba(150, 105, 190, 0.25);
 }
 
 .brand-highlight {
-  color: #7D9275;
+  color: #a16ac4;
 }
 
 .navbar-links {
@@ -45,7 +56,7 @@
 
 .navbar-links a,
 .signin-link {
-  color: #7B817A;
+  color: #766583;
   font-size: 14px;
   font-weight: 500;
   transition: color 0.2s ease;
@@ -53,7 +64,7 @@
 
 .navbar-links a:hover,
 .signin-link:hover {
-  color: #61765A;
+  color: #a16ac4;
 }
 
 .navbar-actions {
@@ -65,15 +76,19 @@
 .get-started-btn {
   padding: 11px 20px;
   border-radius: 12px;
-  background-color: #7D9275;
+
+  background: linear-gradient(135deg, #9870d5, #c783c3);
   color: white;
+
   font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 5px 15px rgba(150, 105, 190, 0.22);
+  transition: all 0.25s ease;
 }
 
 .get-started-btn:hover {
-  background-color: #61765A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(150, 105, 190, 0.32);
 }
 
 @media (max-width: 768px) {
@@ -108,3 +123,4 @@
     gap: 14px;
   }
 }
+

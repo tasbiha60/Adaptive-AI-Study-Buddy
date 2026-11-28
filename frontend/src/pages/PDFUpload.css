@@ -1,0 +1,137 @@
+.pdf-upload-page {
+  min-height: 100vh;
+  padding: 60px 20px;
+  background: #f5f1fa;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.upload-container {
+  width: 100%;
+  max-width: 750px;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.upload-container h1 {
+  color: #392d50;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.upload-container > p {
+  color: #777;
+  margin-bottom: 30px;
+}
+
+.upload-box {
+  border: 2px dashed #b9a5d5;
+  border-radius: 12px;
+  padding: 35px 20px;
+  text-align: center;
+  background: #faf8fd;
+}
+
+.upload-box input {
+  display: block;
+  margin: 0 auto 20px;
+  max-width: 100%;
+}
+
+.upload-box button {
+  background: #72549a;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.upload-box button:hover {
+  background: #5d427f;
+}
+
+.upload-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.upload-result {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f7f5fa;
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+.upload-result h2 {
+  color: #3d8057;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.upload-result h3 {
+  margin: 20px 0 10px;
+  color: #392d50;
+}
+
+.upload-result pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.error-message {
+  color: #d33;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .upload-container {
+    padding: 25px 18px;
+  }
+
+  .upload-container h1 {
+    font-size: 23px;
+  }
+}
+/* Individual PDF text chunks */
+.upload-chunk {
+  margin-top: 25px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e5dced;
+  border-radius: 12px;
+}
+
+/* Chunk heading */
+.upload-chunk h4 {
+  color: #72549a;
+  font-size: 17px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee8f5;
+}
+
+/* Chunk text */
+.upload-chunk pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+  color: #444;
+  font-size: 14px;
+  max-height: 350px;
+  overflow-y: auto;
+  background: #faf8fd;
+  padding: 18px;
+  border-radius: 8px;
+}
