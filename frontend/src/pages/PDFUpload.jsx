@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import './PDFUpload.css'
 
@@ -12,12 +11,17 @@ function PDFUpload() {
   const [quizLoading, setQuizLoading] = useState(false)
   const [quizError, setQuizError] = useState('')
 
+  const [selectedAnswers, setSelectedAnswers] = useState({})
+  const [submitted, setSubmitted] = useState(false)
+
   function handleFileChange(event) {
     setFile(event.target.files[0])
     setResult(null)
     setQuiz(null)
     setError('')
     setQuizError('')
+    setSelectedAnswers({})
+    setSubmitted(false)
   }
 
   async function handleUpload() {
@@ -33,6 +37,8 @@ function PDFUpload() {
     setError('')
     setResult(null)
     setQuiz(null)
+    setSelectedAnswers({})
+    setSubmitted(false)
 
     try {
       const response = await fetch(
@@ -66,6 +72,8 @@ function PDFUpload() {
     setQuizLoading(true)
     setQuizError('')
     setQuiz(null)
+    setSelectedAnswers({})
+    setSubmitted(false)
 
     try {
       const response = await fetch(
@@ -89,6 +97,10 @@ function PDFUpload() {
         throw new Error(data.detail || 'Quiz generation failed.')
       }
 
+      if (!data.questions || !Array.isArray(data.questions)) {
+        throw new Error('Invalid quiz response from server.')
+      }
+
       setQuiz(data)
     } catch (err) {
       setQuizError(err.message)
@@ -96,6 +108,57 @@ function PDFUpload() {
       setQuizLoading(false)
     }
   }
+
+  function handleAnswerSelect(questionIndex, optionIndex) {
+    if (submitted) return
+
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [questionIndex]: optionIndex
+    }))
+  }
+
+  function getCorrectAnswerIndex(question) {
+    const answer = String(question.correct_answer || '').trim()
+
+    // First check whether the answer is the actual option text.
+    const textIndex = question.options.findIndex(
+      option =>
+        String(option).trim().toLowerCase() === answer.toLowerCase()
+    )
+
+    if (textIndex !== -1) return textIndex
+
+    // Also support answers such as A, B, Option A, or A.
+    const letterMatch = answer.match(
+      /^(?:option\s*)?([A-D])(?:[.)\s:-]|$)/i
+    )
+
+    if (letterMatch) {
+      return letterMatch[1].toUpperCase().charCodeAt(0) - 65
+    }
+
+    return -1
+  }
+
+  function handleSubmitQuiz() {
+    if (!quiz) return
+
+    if (Object.keys(selectedAnswers).length !== quiz.questions.length) {
+      setQuizError('Please answer all questions before submitting.')
+      return
+    }
+
+    setQuizError('')
+    setSubmitted(true)
+  }
+
+  const score = quiz
+    ? quiz.questions.reduce((total, question, index) => {
+        return total +
+          (selectedAnswers[index] === getCorrectAnswerIndex(question) ? 1 : 0)
+      }, 0)
+    : 0
 
   return (
     <div className="pdf-upload-page">
@@ -131,7 +194,7 @@ function PDFUpload() {
 
             <h3>Extracted Text Chunks</h3>
 
-            {result.chunks && result.chunks.map((chunk, index) => (
+            {result.chunks?.map((chunk, index) => (
               <div className="upload-chunk" key={index}>
                 <h4>Chunk {index + 1}</h4>
                 <pre>{chunk}</pre>
@@ -158,27 +221,112 @@ function PDFUpload() {
             <p>Total Questions: {quiz.total_questions}</p>
             <p>Difficulty: {quiz.difficulty}</p>
 
-            {quiz.questions.map((question, index) => (
-              <div className="quiz-question" key={index}>
+            {!submitted && (
+              <p>Select one answer for each question, then submit your quiz.</p>
+            )}
+
+            {submitted && (
+              <div className="quiz-score">
+                <h2>Quiz Results</h2>
                 <h3>
-                  Question {index + 1}: {question.question}
+                  Your Score: {score} / {quiz.questions.length}
                 </h3>
-
-                {question.options.map((option, optionIndex) => (
-                  <p key={optionIndex}>
-                    {String.fromCharCode(65 + optionIndex)}. {option}
-                  </p>
-                ))}
-
                 <p>
-                  <strong>Correct Answer:</strong> {question.correct_answer}
-                </p>
-
-                <p>
-                  <strong>Explanation:</strong> {question.explanation}
+                  Percentage: {Math.round(
+                    (score / quiz.questions.length) * 100
+                  )}%
                 </p>
               </div>
-            ))}
+            )}
+
+            {quiz.questions.map((question, index) => {
+              const correctIndex = getCorrectAnswerIndex(question)
+              const isCorrect =
+                selectedAnswers[index] === correctIndex
+
+              return (
+                <div className="quiz-question" key={index}>
+                  <h3>
+                    Question {index + 1}: {question.question}
+                  </h3>
+
+                  <div className="quiz-options">
+                    {question.options.map((option, optionIndex) => (
+                      <label
+                        className={`quiz-option ${
+                          selectedAnswers[index] === optionIndex
+                            ? 'selected'
+                            : ''
+                        } ${
+                          submitted && optionIndex === correctIndex
+                            ? 'correct'
+                            : ''
+                        } ${
+                          submitted &&
+                          selectedAnswers[index] === optionIndex &&
+                          !isCorrect
+                            ? 'incorrect'
+                            : ''
+                        }`}
+                        key={optionIndex}
+                      >
+                        <input
+                          type="radio"
+                          name={`question-${index}`}
+                          checked={selectedAnswers[index] === optionIndex}
+                          onChange={() =>
+                            handleAnswerSelect(index, optionIndex)
+                          }
+                          disabled={submitted}
+                        />
+
+                        <span>
+                          {String.fromCharCode(65 + optionIndex)}. {option}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+
+                  {submitted && (
+                    <div className="answer-feedback">
+                      <p>
+                        <strong>
+                          {isCorrect ? 'Correct!' : 'Incorrect'}
+                        </strong>
+                      </p>
+
+                      <p>
+                        <strong>Correct Answer:</strong>{' '}
+                        {correctIndex >= 0
+                          ? question.options[correctIndex]
+                          : question.correct_answer}
+                      </p>
+
+                      <p>
+                        <strong>Explanation:</strong>{' '}
+                        {question.explanation}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+
+            {!submitted ? (
+              <button
+                onClick={handleSubmitQuiz}
+                disabled={Object.keys(selectedAnswers).length !== quiz.questions.length}
+              >
+                Submit Quiz
+              </button>
+            ) : (
+              <button
+                onClick={handleGenerateQuiz}
+                disabled={quizLoading}
+              >
+                {quizLoading ? 'Generating...' : 'Generate Another Quiz'}
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -187,4 +335,5 @@ function PDFUpload() {
 }
 
 export default PDFUpload
+
 
